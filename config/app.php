@@ -135,18 +135,7 @@ return [
     | this array to grant expanded functionality to your applications.
     |
     */
-    'aliases' => Facade::defaultAliases()->merge([
-        // ...
-    ])->toArray(),
-    'providers' => [
-        // ...
-        Yajra\DataTables\DataTablesServiceProvider::class,
-    ],
 
-    'aliases' => [
-        // ...
-        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
-    ],
     'providers' => [
 
         /*
@@ -174,6 +163,8 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Yajra\Datatables\DatatablesServiceProvider::class,
+
 
         /*
          * Package Service Providers...
