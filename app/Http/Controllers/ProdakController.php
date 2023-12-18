@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Prodak;
 use SweetAlert;
+use Yajra\DataTables\Facades\DataTables;
 
 class ProdakController extends Controller
 {
@@ -13,64 +14,26 @@ class ProdakController extends Controller
         $prodaks = Prodak::latest()->paginate(5);
         return view('prodak.index', compact('prodaks'));
     }
+
+    public function getProdak()
+    {
+        $prodak = Prodak::select([
+            'id', 'name', 'price', 'nama_proses', 'klasifikasi_perubahan', 'pelaksanaan2ndQA',
+            'item_perubahan', 'no_lembar_instruksi', 'tanggal_produksi_saat_perubahan', 'shift',
+            'part_number_finish_good', 'kualitas', 'fakta_ng', 'pcdt', 'tanggal_perubahan_pcdt',
+            'instruksi_kerja', 'tanggal_perubahan_instruksi_kerja', 'isir', 'tanggal_perubahan_isir',
+            'pemahaman'
+        ]);
+
+        return DataTables::of($prodak)
+            ->addColumn('action', function ($prodak) {
+                // Add your action buttons or links here
+                return '<button class="btn btn-sm btn-danger delete_prodak" data-id="' . $prodak->id . '">Delete</button>';
+            })
+            ->make(true);
+    }
     public function addProdak(Request $request)
     {
-        $request->validate(
-            [
-                'name' => 'required|unique:prodaks',
-                'price' => 'required',
-                'nama_proses' => 'required',
-                'klasifikasi_perubahan' => 'required|in:design,proses',
-                'pelaksanaan2ndQA' => 'required|in:ada,tidak',
-                'item_perubahan' => 'required',
-                'no_lembar_instruksi' => 'nullable',
-                'tanggal_produksi_saat_perubahan' => 'required|date',
-                'shift' => 'required|in:sift1,sift2',
-                'part_number_finish_good' => 'required',
-                'kualitas' => 'required|in:ok,ng',
-                'fakta_ng' => 'nullable',
-                'pcdt' => 'required|in:resived,not resived',
-                'tanggal_perubahan_pcdt' => 'nullable|date',
-                'instruksi_kerja' => 'required|in:resived,not resived',
-                'tanggal_perubahan_instruksi_kerja' => 'nullable|date',
-                'isir' => 'required|in:resived,not resived',
-                'tanggal_perubahan_isir' => 'nullable|date',
-                'pemahaman' => 'required|in:paham,kurang paham,tidak paham sama sekali',
-                // Tambahkan validasi untuk field lainnya sesuai dengan kebutuhan
-            ],
-            [
-                'name.required' => 'Name is required',
-                'name.unique' => 'Prodak Already Exists',
-                'price.required' => 'Price is required',
-                'nama_proses.required' => 'Nama Proses is required',
-                'klasifikasi_perubahan.required' => 'Klasifikasi Perubahan is required',
-                'klasifikasi_perubahan.in' => 'Klasifikasi Perubahan harus design atau proses',
-                'pelaksanaan2ndQA.required' => 'Pelaksanaan 2nd QA is required',
-                'pelaksanaan2ndQA.in' => 'Pelaksanaan 2nd QA harus ada atau tidak',
-                'item_perubahan.required' => 'Item Perubahan is required',
-                'tanggal_produksi_saat_perubahan.required' => 'Tanggal Produksi Saat Perubahan is required',
-                'tanggal_produksi_saat_perubahan.date' => 'Tanggal Produksi Saat Perubahan harus dalam format tanggal yang valid',
-                'shift.required' => 'Shift is required',
-                'shift.in' => 'Shift harus sift1 atau sift2',
-                'part_number_finish_good.required' => 'Part Number Finish Good is required',
-                'kualitas.required' => 'Kualitas is required',
-                'kualitas.in' => 'Kualitas harus ok atau ng',
-                'fakta_ng.nullable' => 'Fakta NG harus null atau string',
-                'pcdt.required' => 'PCDT is required',
-                'pcdt.in' => 'PCDT harus resived atau not resived',
-                'tanggal_perubahan_pcdt.nullable' => 'Tanggal Perubahan PCDT harus null atau dalam format tanggal yang valid',
-                'instruksi_kerja.required' => 'Instruksi Kerja is required',
-                'instruksi_kerja.in' => 'Instruksi Kerja harus resived atau not resived',
-                'tanggal_perubahan_instruksi_kerja.nullable' => 'Tanggal Perubahan Instruksi Kerja harus null atau dalam format tanggal yang valid',
-                'isir.required' => 'ISIR is required',
-                'isir.in' => 'ISIR harus resived atau not resived',
-                'tanggal_perubahan_isir.nullable' => 'Tanggal Perubahan ISIR harus null atau dalam format tanggal yang valid',
-                'pemahaman.required' => 'Pemahaman is required',
-                'pemahaman.in' => 'Pemahaman harus paham, kurang paham, atau tidak paham sama sekali',
-                // Tambahkan pesan validasi untuk field lainnya sesuai dengan kebutuhan
-            ]
-        );
-
         $prodak = new Prodak();
         $prodak->name = $request->name;
         $prodak->price = $request->price;
@@ -95,9 +58,7 @@ class ProdakController extends Controller
 
         $prodak->save();
 
-        return response()->json([
-            'status' => 'success'
-        ]);
+        return response()->json(['success' => "Berhasil menyimpan data"]);
     }
 
 

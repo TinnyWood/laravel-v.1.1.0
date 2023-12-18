@@ -1,7 +1,3 @@
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="http://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
 <script>
     $.ajaxSetup({
         headers: {
@@ -11,30 +7,121 @@
 </script>
 <script>
     $(document).ready(function() {
+        // Initialize DataTable
+        var table = $('#datatable-search').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('get.prodak') }}",
+            columns: [{
+                    data: 'name',
+                    name: 'name'
+                },
+                {
+                    data: 'price',
+                    name: 'price'
+                },
+                {
+                    data: 'nama_proses',
+                    name: 'nama_proses'
+                },
+                {
+                    data: 'klasifikasi_perubahan',
+                    name: 'klasifikasi_perubahan'
+                },
+                {
+                    data: 'pelaksanaan2ndQA',
+                    name: 'pelaksanaan2ndQA'
+                },
+                {
+                    data: 'item_perubahan',
+                    name: 'item_perubahan'
+                },
+                {
+                    data: 'no_lembar_instruksi',
+                    name: 'no_lembar_instruksi'
+                },
+                {
+                    data: 'tanggal_produksi_saat_perubahan',
+                    name: 'tanggal_produksi_saat_perubahan'
+                },
+                {
+                    data: 'shift',
+                    name: 'shift'
+                },
+                {
+                    data: 'part_number_finish_good',
+                    name: 'part_number_finish_good'
+                },
+                {
+                    data: 'kualitas',
+                    name: 'kualitas'
+                },
+                {
+                    data: 'fakta_ng',
+                    name: 'fakta_ng'
+                },
+                {
+                    data: 'pcdt',
+                    name: 'pcdt'
+                },
+                {
+                    data: 'tanggal_perubahan_pcdt',
+                    name: 'tanggal_perubahan_pcdt'
+                },
+                {
+                    data: 'instruksi_kerja',
+                    name: 'instruksi_kerja'
+                },
+                {
+                    data: 'tanggal_perubahan_instruksi_kerja',
+                    name: 'tanggal_perubahan_instruksi_kerja'
+                },
+                {
+                    data: 'isir',
+                    name: 'isir'
+                },
+                {
+                    data: 'tanggal_perubahan_isir',
+                    name: 'tanggal_perubahan_isir'
+                },
+                {
+                    data: 'pemahaman',
+                    name: 'pemahaman'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                }
+            ]
+        });
+    });
+    $(document).ready(function() {
         $(document).on('click', '.add_prodak', function(e) {
             e.preventDefault();
             let name = $('#name').val();
             let price = $('#price').val();
             let nama_proses = $('#nama_proses').val();
-            let klasifikasi_perubahan = $('#klasifikasi_perubahan').val();
-            let pelaksanaan2ndQA = $('#pelaksanaan2ndQA').val();
+            let klasifikasi_perubahan = $('input[name="klasifikasi_perubahan"]:checked').val();
+            let pelaksanaan2ndQA = $('input[name="pelaksanaan2ndQA"]:checked').val();
             let item_perubahan = $('#item_perubahan').val();
             let no_lembar_instruksi = $('#no_lembar_instruksi').val();
             let tanggal_produksi_saat_perubahan = $('#tanggal_produksi_saat_perubahan').val();
-            let shift = $('#shift').val();
+            let shift = $('input[name="shift"]:checked').val();
             let part_number_finish_good = $('#part_number_finish_good').val();
-            let kualitas = $('#kualitas').val();
+            let kualitas = $('input[name="kualitas"]:checked').val();
             let fakta_ng = $('#fakta_ng').val();
-            let pcdt = $('#pcdt').val();
+            let pcdt = $('input[name="pcdt"]:checked').val();
             let tanggal_perubahan_pcdt = $('#tanggal_perubahan_pcdt').val();
-            let instruksi_kerja = $('#instruksi_kerja').val();
+            let instruksi_kerja = $('input[name="instruksi_kerja"]:checked').val();
             let tanggal_perubahan_instruksi_kerja = $('#tanggal_perubahan_instruksi_kerja').val();
-            let isir = $('#isir').val();
+            let isir = $('input[name="isir"]:checked').val();
             let tanggal_perubahan_isir = $('#tanggal_perubahan_isir').val();
             let pemahaman = $('#pemahaman').val();
 
             $.ajax({
-                url: "{{route('add.prodak')}}",
+                url: "{{ route('add.prodak') }}",
                 method: 'post',
                 data: {
                     name: name,
@@ -56,26 +143,69 @@
                     isir: isir,
                     tanggal_perubahan_isir: tanggal_perubahan_isir,
                     pemahaman: pemahaman
-                    // Tambahkan data lainnya sesuai dengan kebutuhan
+                    // Add other data fields as needed
                 },
 
                 success: function(res) {
-                    if (res.status == 'success') {
+                    if (res.success) {
                         $('#addModal').modal('hide');
                         $('#addProdakForm')[0].reset();
                         $('.table').load(location.href + ' .table');
-                        swal.fire('Success!', 'Data berhasil ditambahkan', 'success');
+                        Swal.fire('Success!', 'Data berhasil ditambahkan', 'success');
                     }
                 },
                 error: function(err) {
-                    let error = err.responseJSON;
-                    $.each(error.errors, function(index, value) {
+                    let errors = err.responseJSON.errors;
+                    $.each(errors, function(index, value) {
                         $('.errMsgContainer').append('<span class="text-danger">' + value + '</span>' + '<br>');
                     });
                 }
 
             });
-        })
+        });
+
+        $(document).on('click', '.delete_prodak', function(e) {
+            e.preventDefault();
+            let prodak_id = $(this).data('id');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You will not be able to recover this product!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('delete.prodak') }}",
+                        method: 'post',
+                        data: {
+                            prodak_id: prodak_id
+                        },
+                        success: function(res) {
+                            if (res.status == 'success') {
+                                $('.table').load(location.href + ' .table');
+                                Swal.fire(
+                                    'Deleted!',
+                                    'Your file has been deleted.',
+                                    'success'
+                                );
+                            }
+                        },
+                        error: function(err) {
+                            $('.errMsgContainer').html('');
+                            let errors = err.responseJSON.errors;
+                            $.each(errors, function(index, value) {
+                                $('.errMsgContainer').append('<span class="text-danger">' + value + '</span>' + '<br>');
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+
         // menampilkan modal update data
         $(document).on('click', '.updateProdakForm', function() {
             let id = $(this).data('id');
@@ -192,45 +322,6 @@
         })
 
         // delete prodak 
-        $(document).on('click', '.delete_prodak', function(e) {
-            e.preventDefault();
-            let prodak_id = $(this).data('id');
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'You will not be able to recover this product!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "{{route('delete.prodak')}}",
-                        method: 'post',
-                        data: {
-                            prodak_id: prodak_id
-                        },
-                        success: function(res) {
-                            if (res.status == 'success') {
-                                $('.table').load(location.href + ' .table');
-                                Swal.fire(
-                                    'Deleted!',
-                                    'Your file has been deleted.',
-                                    'success'
-                                );
-                            }
-                        },
-                        error: function(err) {
-                            $('.errMsgContainer').html('');
-                            let error = err.responseJSON;
-                            $.each(error.errors, function(index, value) {
-                                $('.errMsgContainer').append('<span class="text-danger">' + value + '</span>' + '<br>');
-                            });
-                        }
-                    });
-                }
-            });
-        });
+
     });
 </script>

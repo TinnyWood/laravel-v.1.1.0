@@ -35,6 +35,8 @@ Route::get('prodak', [ProdakController::class, 'prodaks'])->name('prodaks');
 Route::post('/add-prodak', [ProdakController::class, 'addprodak'])->name('add.prodak');
 Route::post('/update-prodak', [ProdakController::class, 'updateprodak'])->name('update.prodak');
 Route::post('/delete_prodak', [ProdakController::class, 'deleteProdak'])->name('delete.prodak');
+// routes/web.php
+Route::get('get-prodak', 'ProdakController@getProdak')->name('get.prodak');
 
 Route::get('latihan', [LatihanController::class, 'latihans'])->name('latihans');
 Route::post('/add-latihan', [ProdakController::class, 'addLatihan'])->name('add.latihan');
